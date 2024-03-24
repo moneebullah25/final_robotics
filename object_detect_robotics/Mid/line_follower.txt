@@ -1,0 +1,108 @@
+// 13 - right sensor
+// 12 - middle sensor
+// 11 - left sensor
+const int irSensorPins[3] = {11,12,13};
+
+// left motor
+int pin1_motor_R = 3;
+int pin1_motor_L = 2;
+
+// right motor
+int pin2_motor_R = 5;
+int pin2_motor_L = 4;
+
+int speed1 = 50;
+int speed2 = 130;
+int count = 5000;
+
+void setup() {
+ for (int i = 0; i < 3; i++) {
+    pinMode(irSensorPins[i], INPUT);
+  }
+ pinMode(pin1_motor_R,OUTPUT);
+ pinMode(pin2_motor_R,OUTPUT);
+ pinMode(pin1_motor_L,OUTPUT);
+ pinMode(pin2_motor_L,OUTPUT);
+ Serial.begin(9600);
+}
+ 
+void loop() {     
+ // Forward();
+  SensorDrive();
+}
+//// analogRead values go from 0 to 1023
+void Forward(){
+  Serial.println("F");
+  analogWrite(pin1_motor_R,speed1); 
+  analogWrite(pin2_motor_R,speed2);
+  analogWrite(pin1_motor_L,0);
+  analogWrite(pin2_motor_L,0);
+}
+void Left(){
+  Serial.println("Left");
+  for (int i = 0; i < count; i++){
+  analogWrite(pin1_motor_R,speed1); 
+  analogWrite(pin2_motor_R,0);
+  analogWrite(pin1_motor_L,0);
+  analogWrite(pin2_motor_L,0);
+  }
+}
+void Right(){
+  Serial.println("Right");
+  for (int i = 0; i < count; i++){
+  analogWrite(pin1_motor_R,0);
+  analogWrite(pin2_motor_R,speed2);
+  analogWrite(pin1_motor_L,0);
+  analogWrite(pin2_motor_L,0);
+  }
+}
+void Stop(){
+  Serial.println("Stop");
+  analogWrite(pin1_motor_R,0);
+  analogWrite(pin2_motor_R,0);
+  analogWrite(pin1_motor_L,0);
+  analogWrite(pin2_motor_L,0);
+}
+void FullLeft(){
+  Serial.println("Full Left");
+  for (int i = 0; i < count; i++){
+    analogWrite(pin1_motor_R,speed1*2); 
+    analogWrite(pin2_motor_R,0);
+    analogWrite(pin1_motor_L,0);
+    analogWrite(pin2_motor_L,0);
+  }
+}
+void FullRight(){
+  Serial.println("Full Right");
+  for (int i = 0; i < count; i++){
+  analogWrite(pin1_motor_R,0); 
+  analogWrite(pin2_motor_R,speed2*2);
+  analogWrite(pin1_motor_L,0);
+  analogWrite(pin2_motor_L,0);
+  }
+}
+void SensorDrive(){
+  int irSensorValues[3];
+
+  for(int i = 0; i < 3; i++)
+  {
+    irSensorValues[i] = digitalRead(irSensorPins[i]);
+    if(irSensorValues[i]==0)
+    {
+      irSensorValues[i]=1;
+    }
+    else
+    {
+      irSensorValues[i]=0;
+    }
+  }
+
+    if(irSensorValues[0]==HIGH && irSensorValues[1]==LOW && irSensorValues[2]==LOW) {Stop();FullRight(); }//100 
+    else if(irSensorValues[0]==HIGH && irSensorValues[1]==HIGH && irSensorValues[2]==LOW) {Right(); }//110
+    else if(irSensorValues[0]==LOW && irSensorValues[1]==LOW && irSensorValues[2]==HIGH) {Stop();FullLeft(); }//001
+    else if(irSensorValues[0]==LOW && irSensorValues[1]==HIGH && irSensorValues[2]==HIGH) {Left(); }//011
+    else if(irSensorValues[0]==LOW && irSensorValues[1]==HIGH && irSensorValues[2]==LOW) {Forward(); }//010  
+    else if(irSensorValues[0]==LOW && irSensorValues[1]==LOW && irSensorValues[2]==LOW) {Forward(); }//000
+    else if(irSensorValues[0]==HIGH && irSensorValues[1]==HIGH && irSensorValues[2]==HIGH){Left(); }    
+
+}

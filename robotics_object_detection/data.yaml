@@ -1,0 +1,5 @@
+train: /content/drive/MyDrive/Robotics/dataset/train/images
+val: /content/drive/MyDrive/Robotics/dataset/val/images
+
+nc: 2
+names: ["Robot", "Target"]

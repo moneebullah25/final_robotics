@@ -1,0 +1,105 @@
+#include <WiFi.h>
+
+const char* ssid = "Fazii13";
+const char* password = "Faizan13";
+
+int motorR_EN = 4;
+int motorL_EN = 19;
+int motorRA =  16;
+int motorRB = 17;
+int motorLA = 5;
+int motorLB = 18;
+
+WiFiServer server(10000);  // server port to listen on
+
+void setup() {
+  Serial.begin(115200);
+  Serial.printf("Connecting to %s\n", ssid);
+  connectToWiFi(); // Connect to WiFi
+  server.begin();
+  printWifiStatus();
+  Serial.println(" listening on port 10000");
+  pinMode(motorR_EN, OUTPUT);
+  pinMode(motorL_EN, OUTPUT);
+  pinMode(motorRA, OUTPUT);
+  pinMode(motorRB, OUTPUT);
+  pinMode(motorLA, OUTPUT);
+  pinMode(motorLB, OUTPUT);
+}
+
+boolean alreadyConnected = false;   // whether or not the client was connected previously
+
+void loop() {
+  static WiFiClient client;
+  static int16_t seqExpected = -1;
+
+  if (!client)
+    client = server.available();  // Listen for incoming clients
+
+  if (client) {                    // if client connected
+    if (!alreadyConnected) {
+      client.flush();
+      Serial.println("We have a new client");
+      alreadyConnected = true;
+     }
+
+    int length;
+    char buffer[1024];  // Assuming a reasonable buffer size
+
+    if ((length = client.available()) > 0) {
+      if (length < sizeof(buffer)) {
+        client.readBytesUntil('\n', buffer, sizeof(buffer));
+        String valueString(buffer);
+        int value1 = valueString.substring(0, valueString.indexOf(',')).toInt();
+        int value2 = valueString.substring(valueString.indexOf(',') +1 , valueString.length()).toInt();
+        if (value2 == 10000) {
+          value2 = 100;
+        }
+        Serial.println(" ");
+        Serial.println(value1);
+        Serial.println(value2);
+        Serial.println(" ");
+        analogWrite(motorR_EN, value1); // Enable pin for motorR to control speed
+        digitalWrite(motorRA, HIGH); 
+        digitalWrite(motorRB, LOW); 
+        analogWrite(motorL_EN, value2/1.5); // Enable pin for motorL to control speed
+        digitalWrite(motorLA, HIGH);  
+        digitalWrite(motorLB, LOW);
+        Serial.println("Motor control performed");
+       } else {
+         while (client.available())  client.read();// discard corrupt packet
+      }
+    }
+  }
+ // Check if WiFi connection is lost and reconnect if necessary
+ if (WiFi.status() != WL_CONNECTED) {
+   Serial.println("WiFi connection lost. Reconnecting...");
+   connectToWiFi();
+  }
+}
+
+void connectToWiFi() {
+  WiFi.begin(ssid, password);
+  int attempts =0;
+  while (WiFi.status() != WL_CONNECTED && attempts <20) {
+    delay(500);
+    Serial.print('.');
+    attempts++;
+   }
+ if (WiFi.status() == WL_CONNECTED) {
+  Serial.println("\nConnected to WiFi");
+  } else {
+  Serial.println("\nConnection failed. Please check your Wi-Fi credentials");
+  }
+}
+
+void printWifiStatus() {
+   // print the SSID of the network you're attached to:
+   Serial.print("SSID: ");
+   Serial.println(WiFi.SSID());
+
+   // print your WiFi router's IP address:
+   IPAddress ip = WiFi.localIP();
+   Serial.print("IP Address: ");
+   Serial.println(ip);
+}
