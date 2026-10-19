@@ -1,9 +1,10 @@
+import os
 import cv2
 import numpy as np
 import time
 import socket
 
-TCP_IP = '192.168.93.215' # put esp32 on serial monitor and copy the ip from there
+TCP_IP = os.environ.get('ROBOT_IP', '192.168.4.1') # put esp32 on serial monitor and copy the ip from there
 TCP_PORT = 10000
 BUFFER_SIZE = 1024
 

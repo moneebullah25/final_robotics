@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+runs/
+.DS_Store
+
+# large binaries
+*.pt
+*.pth
+*.onnx
+*.mp4
+*.zip
+*.avi
+*.mov
