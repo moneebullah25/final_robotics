@@ -3,9 +3,6 @@ import numpy as np
 import time
 import socket
 
-# 192.168.53.215 Fazii13
-# 192.168.135.215 Begonia
-# '192.168.93.215' Adeen
 
 TCP_IP = '192.168.93.215' # put esp32 on serial monitor and copy the ip from there
 TCP_PORT = 10000
