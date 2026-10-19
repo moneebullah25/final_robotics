@@ -4,3 +4,12 @@ __pycache__/
 .ipynb_checkpoints/
 runs/
 .DS_Store
+
+# large binaries
+*.pt
+*.pth
+*.onnx
+*.mp4
+*.zip
+*.avi
+*.mov

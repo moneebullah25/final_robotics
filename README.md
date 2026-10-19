@@ -29,7 +29,13 @@ yolo predict model=best.pt source=dataset/val/images/robot.jpg conf=0.3
 ## Hardware notes
 
 - ESP32 sketches (`robotics_final/esp32*.txt`) contain `YOUR_WIFI_SSID` / `YOUR_WIFI_PASSWORD` placeholders; fill in your own network.
-- `controller.py` needs the `keyboard` package and the car's IP set in `TCP_IP`.
+- `controller.py` needs the `keyboard` package. The car's IP is read from the `ROBOT_IP` environment variable (default `192.168.4.1`); set it to the address the ESP32 prints on its serial monitor.
 - Hardware code was not run in this audit; only the YOLO demo was.
 
-No license file is present; add one before reuse.
+## Repository size
+
+About 56 MB of model weights, videos and archives (`*.pt`, `*.mp4`, `*.zip`) are committed in history and cannot be removed without rewriting it. `.gitignore` now blocks new ones; use Git LFS or releases for new large files.
+
+## License
+
+MIT, see [LICENSE](LICENSE).
