@@ -1,10 +1,11 @@
+import os
 import socket
 import keyboard
 import time
 
 
 
-TCP_IP = '192.168.93.215'
+TCP_IP = os.environ.get('ROBOT_IP', '192.168.4.1')
 TCP_PORT = 10000
 connected = False
 
